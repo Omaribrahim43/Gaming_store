@@ -30,7 +30,11 @@
                             </button>
                             <div class="nk-form-response-success"></div>
                             <div class="nk-form-response-error"></div>
-
+                            <a class="nk-btn nk-btn-rounded nk-btn-color-main-2" href="{{ url('login/google') }}">Login With
+                                Google</a>
+                            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                href="{{ route('password.request') }}">Forgot Password ?
+                            </a>
                         </form>
                     </div>
                 </div>

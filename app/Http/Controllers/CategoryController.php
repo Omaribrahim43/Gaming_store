@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\DataTables\CategoryDataTable;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Http\Request;
 
@@ -93,8 +95,11 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $category = Category::findOrFail($id);
-        $category->delete();
-
-        return response(['status' => 'success', 'message' => 'Deleted Successfully!']);
+        if (ProductCategory::where('category_id', $id)->count() == 0) {
+            $category->delete();
+            return response(['status' => 'success', 'message' => 'Deleted Successfully!']);
+        } else {
+            return response(['status' => 'error', 'message' => 'This category has products!']);
+        }
     }
 }

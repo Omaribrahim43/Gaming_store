@@ -1,0 +1,12 @@
+.nk-product-image img {
+    width: 100%;
+    /* Ensures the image takes up 100% of the container's width */
+    height: auto;
+    /* Maintains the aspect ratio of the original image */
+    max-width: 100%;
+    /* Prevents the image from exceeding its original size */
+    display: block;
+    /* Removes any extra spacing below the image */
+    margin: 0 auto;
+    /* Centers the image within its container */
+}

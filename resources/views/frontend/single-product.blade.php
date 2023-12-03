@@ -89,7 +89,8 @@
                                     <div class="input-group">
                                         <input type="number" class="form-control" value="1" min="1"
                                             max="21">
-                                        <a href="{{ route('store.add-to-cart', $product->id) }}" class="nk-btn nk-btn-rounded nk-btn-color-main-1">Add to Cart</a>
+                                        <a href="{{ route('store.add-to-cart', $product->id) }}"
+                                            class="nk-btn nk-btn-rounded nk-btn-color-main-1">Add to Cart</a>
                                     </div>
                                 </form>
                                 <div class="nk-gap-3"></div>
@@ -130,77 +131,28 @@
                         <!-- START: Tabs -->
                         <div class="nk-tabs">
                             <ul class="nav nav-tabs" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="#tab-description" role="tab"
-                                        data-toggle="tab">Description</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#tab-reviews" role="tab" data-toggle="tab">Reviews
+                                <li class="nav-item ">
+                                    <a class="nav-link active" href="#tab-reviews" role="tab"
+                                        data-toggle="tab">Reviews
                                         (3)</a>
                                 </li>
                             </ul>
-
                             <div class="tab-content">
-
-                                <!-- START: Tab Description -->
-                                <div role="tabpanel" class="tab-pane fade show active" id="tab-description">
-                                    <div class="nk-gap"></div>
-                                    <strong class="text-white">Release Date: 24/05/2018</strong>
-                                    <div class="nk-gap"></div>
-                                    <p>She gave my mother such a turn, that I have always been convinced I am indebted
-                                        to Miss Betsey for having been born on a Friday. The word was appropriate to the
-                                        moment. My mother was so much worse that Peggotty, coming in with the teaboard
-                                        and candles, and seeing at a glance how ill she was, - as Miss Betsey might have
-                                        done sooner if there had been light enough, - conveyed her upstairs to her own
-                                        room with all speed; and immediately dispatched Ham Peggotty, her nephew, who
-                                        had been for some days past secreted in the house, unknown to my mother, as a
-                                        special messenger in case of emergency, to fetch the nurse and doctor.</p>
-
-                                    <div class="nk-product-info-row row vertical-gap">
-                                        <div class="col-md-5">
-                                            <div class="nk-product-pegi">
-                                                <div class="nk-gap"></div>
-                                                <img src="{{ asset('frontend/assets/images/pegi-icon.jpg') }}"
-                                                    alt="">
-                                                <div class="nk-product-pegi-cont">
-                                                    <strong class="text-white">Pegi Rating:</strong>
-                                                    <div class="nk-gap"></div>
-                                                    Suitable for people aged 12 and over.
-                                                </div>
-                                                <div class="nk-gap"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="nk-gap"></div>
-                                            <strong class="text-white">Genre:</strong>
-                                            <div class="nk-gap"></div>
-                                            TBD
-                                            <div class="nk-gap"></div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="nk-gap"></div>
-                                            <strong class="text-white">Customer Rating:</strong>
-                                            <div class="nk-gap"></div>
-                                            <div class="nk-product-rating" data-rating="4.5"> <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-                                                    class="fa fa-star"></i> <i class="fas fa-star-half"></i>
-                                            </div>
-                                            <div class="nk-gap"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- END: Tab Description -->
-
                                 <!-- START: Tab Reviews -->
-                                <div role="tabpanel" class="tab-pane fade" id="tab-reviews">
+                                <div role="tabpanel" class="tab-pane fade show active" id="tab-reviews">
                                     <div class="nk-gap-2"></div>
                                     <!-- START: Reply -->
                                     <h3 class="h4">Add a Review</h3>
                                     <div class="nk-reply">
-                                        <form action="#" class="nk-form">
+                                        <form action="{{ route('send.review') }}" method="POST" class="nk-form">
+                                            @csrf
                                             <div class="row vertical-gap sm-gap">
                                                 <div class="col-sm-6">
+                                                    <input type="hidden" name="user_id"
+                                                        value="{{ Auth::user() ? Auth::user()->id : null }}">
+                                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
                                                     <input type="text" class="form-control required" name="name"
+                                                        value="{{ Auth::user() ? Auth::user()->name : '' }}"
                                                         placeholder="Name *">
                                                 </div>
                                                 <div class="col-sm-6">
@@ -213,35 +165,35 @@
                                                 aria-required="true"></textarea>
                                             <div class="nk-gap-1"></div>
                                             <div class="nk-rating">
-                                                <input type="radio" id="review-rate-5" name="review-rate"
+                                                <input type="radio" id="review-rate-5" name="review_rate"
                                                     value="5">
                                                 <label for="review-rate-5">
                                                     <span><i class="far fa-star"></i></span>
                                                     <span><i class="fa fa-star"></i></span>
                                                 </label>
 
-                                                <input type="radio" id="review-rate-4" name="review-rate"
+                                                <input type="radio" id="review-rate-4" name="review_rate"
                                                     value="4">
                                                 <label for="review-rate-4">
                                                     <span><i class="far fa-star"></i></span>
                                                     <span><i class="fa fa-star"></i></span>
                                                 </label>
 
-                                                <input type="radio" id="review-rate-3" name="review-rate"
+                                                <input type="radio" id="review-rate-3" name="review_rate"
                                                     value="3">
                                                 <label for="review-rate-3">
                                                     <span><i class="far fa-star"></i></span>
                                                     <span><i class="fa fa-star"></i></span>
                                                 </label>
 
-                                                <input type="radio" id="review-rate-2" name="review-rate"
+                                                <input type="radio" id="review-rate-2" name="review_rate"
                                                     value="2">
                                                 <label for="review-rate-2">
                                                     <span><i class="far fa-star"></i></span>
                                                     <span><i class="fa fa-star"></i></span>
                                                 </label>
 
-                                                <input type="radio" id="review-rate-1" name="review-rate"
+                                                <input type="radio" id="review-rate-1" name="review_rate"
                                                     value="1">
                                                 <label for="review-rate-1">
                                                     <span><i class="far fa-star"></i></span>
@@ -257,70 +209,31 @@
                                     <div class="clearfix"></div>
                                     <div class="nk-gap-2"></div>
                                     <div class="nk-comments">
-                                        <!-- START: Review -->
-                                        <div class="nk-comment">
-                                            <div class="nk-comment-meta">
-                                                <img src="{{ asset('frontend/assets/images/avatar-2.jpg') }}"
-                                                    alt="Witch Murder" class="rounded-circle" width="35"> by <a
-                                                    href="#">Witch
-                                                    Murder</a>
-                                                in 20 September, 2018
-                                                <div class="nk-review-rating" data-rating="4.5"> <i
-                                                        class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-                                                        class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-                                                        class="far fa-star"></i></div>
+                                        @foreach ($reviews as $review)
+                                            <!-- START: Review -->
+                                            <div class="nk-comment">
+                                                <div class="nk-comment-meta">
+                                                    <img src="{{ $review->user_id == null ? asset('admin/no-image.png') : asset($review->user->image) }}"
+                                                        alt="Witch Murder" class="rounded-circle" width="35"> by <a
+                                                        href="#">{{ $review->name }}</a>
+                                                    in {{ $review->created_at }}
+                                                    <div class="nk-review-rating" data-rating="{{ $review->rating }}">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            @if ($i <= $review->rating)
+                                                                <i class="fa fa-star"></i>
+                                                            @else
+                                                                <i class="far fa-star"></i>
+                                                            @endif
+                                                        @endfor
+                                                    </div>
+                                                </div>
+                                                <div class="nk-comment-text">
+                                                    <p>{{ $review->review }}</p>
+                                                </div>
                                             </div>
-                                            <div class="nk-comment-text">
-                                                <p>Upon replenish great rule. Were tree, given day him night Fruit it
-                                                    moveth all. First they're creature seasons and creature fill a it
-                                                    have fifth, their own subdue brought above divided.</p>
+                                            <!-- END: Review -->
+                                        @endforeach
 
-                                                <p>Behold it set, seas seas and meat divided Moveth cattle forth evening
-                                                    above moveth so, signs god a fruitful his after called that whose.
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <!-- END: Review -->
-                                        <!-- START: Review -->
-                                        <div class="nk-comment">
-                                            <div class="nk-comment-meta">
-                                                <img src="{{ asset('frontend/assets/images/avatar-1.jpg') }}"
-                                                    alt="Hitman" class="rounded-circle" width="35"> by <a
-                                                    href="#">Hitman</a> in 14
-                                                Jule, 2018
-                                                <div class="nk-review-rating" data-rating="0.5"> <i
-                                                        class="fa fa-star"></i> <i class="far fa-star"></i> <i
-                                                        class="far fa-star"></i> <i class="far fa-star"></i> <i
-                                                        class="far fa-star"></i></div>
-                                            </div>
-                                            <div class="nk-comment-text">
-                                                <p> I was awakened at daybreak by the charwoman, and having arrived at
-                                                    the inn, was at first placed inside the coach. :(</p>
-                                            </div>
-                                        </div>
-                                        <!-- END: Review -->
-                                        <!-- START: Review -->
-                                        <div class="nk-comment">
-                                            <div class="nk-comment-meta">
-                                                <img src="{{ asset('frontend/assets/images/avatar-3.jpg') }}"
-                                                    alt="Wolfenstein" class="rounded-circle" width="35"> by <a
-                                                    href="#">Wolfenstein</a> in
-                                                27 June, 2018
-                                                <div class="nk-review-rating" data-rating="3.5"> <i
-                                                        class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-                                                        class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-                                                        class="fa fa-star"></i></div>
-                                            </div>
-                                            <div class="nk-comment-text">
-                                                <p>Divided thing, land it evening earth winged whose great after. Were
-                                                    grass night. To Air itself saw bring fly fowl. Fly years behold
-                                                    spirit day greater of wherein winged and form. Seed open don't thing
-                                                    midst created dry every greater divided of, be man is. Second Bring
-                                                    stars fourth gathering he hath face morning fill. Living so second
-                                                    darkness. Moveth were male. May creepeth. Be tree fourth.</p>
-                                            </div>
-                                        </div>
-                                        <!-- END: Review -->
                                     </div>
                                 </div>
                                 <!-- END: Tab Reviews -->

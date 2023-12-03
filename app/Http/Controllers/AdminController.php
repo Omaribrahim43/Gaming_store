@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,7 +13,15 @@ class AdminController extends Controller
 {
     public function index()
     {
-        return view('admin.pages.index');
+        $totalSales = Order::sum('total');
+        $previousYearSales = Order::whereYear('created_at', now()->year - 1)->sum('total');
+
+        // Calculate the percentage change
+        $percentage = 0;
+        if ($previousYearSales != 0) {
+            $percentage = (($totalSales - $previousYearSales) / $previousYearSales) * 100;
+        }
+        return view('admin.pages.index', compact('totalSales', 'percentage'));
     }
     public function loginHandler(Request $request)
     {

@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\Client;
+use App\Models\User;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
@@ -30,7 +30,10 @@ class ClientsDataTable extends DataTable
                 return $btns;
             })
             ->addColumn('image', function ($query) {
-                return $img = "<img width='80px' src='" . asset($query->image) . "'></img>";
+                if ($query->image != null) {
+                    return $img = "<img width='80px' src='" . asset($query->image) . "'></img>";
+                }
+                return $img = "<img width='80px' src='" . url('admin/no-category-image.jpg') . "'></img>";
             })
             ->addColumn('status', function ($query) {
                 $active = "<i class='badge badge-success'>Active</i>";
@@ -48,7 +51,7 @@ class ClientsDataTable extends DataTable
     /**
      * Get the query source of dataTable.
      */
-    public function query(Client $model): QueryBuilder
+    public function query(User $model): QueryBuilder
     {
         return $model->newQuery();
     }

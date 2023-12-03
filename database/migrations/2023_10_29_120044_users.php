@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
+            $table->string('google_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->enum('status', ['inactive', 'active'])->default('active');
             $table->timestamps();

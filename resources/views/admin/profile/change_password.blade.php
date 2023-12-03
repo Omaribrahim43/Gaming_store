@@ -3,7 +3,7 @@
     <div class="content-wrapper">
         <div class="content"><!-- Card Profile -->
             <div class="card card-default card-profile">
-                <div class="card-header-bg" style="background-image:url({{ asset('images/user/user-bg-01.jpg') }})">
+                <div class="card-header-bg" style="background-image:url({{ asset('admin/images/user/user-bg-01.jpg') }})">
                 </div>
                 <div class="card-body card-profile-body">
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Order_item;
+use App\Models\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Illuminate\Http\Request;
@@ -58,30 +59,29 @@ class PaypalController extends Controller
 
         if (isset($response['status']) && $response['status'] == 'COMPLETED') {
             // buy the course if the paymnet is successful
-            try {
-                $address = session('address');
-                $date = session('date');
-                $user_id = Auth::user()->id;
+            $address = session('address');
+            $date = session('date');
+            $user_id = Auth::user()->id;
 
-                $order = Order::create([
-                    'address' => $address,
-                    'date' => $date,
-                    'total' => Cart::total(),
-                    'user_id' => $user_id,
+            $order = Order::create([
+                'address' => $address,
+                'date' => $date,
+                'total' => Cart::total(),
+                'user_id' => $user_id,
+            ]);
+            foreach (Cart::content() as $content) {
+                Order_item::create([
+                    'order_id' => $order->id,
+                    'quantity' => $content->qty,
+                    'price' => $content->price,
+                    'product_id' => $content->id,
                 ]);
-                foreach (Cart::content() as $content) {
-                    Order_item::create([
-                        'order_id' => $order->id,
-                        'quantity' => $content->qty,
-                        'price' => $content->price,
-                        'product_id' => $content->id,
-                    ]);
-                }
-                Cart::destroy();
-                return redirect()->back();
-            } catch (\Exception $e) {
-                return redirect()->back();
+                $currentSellingNumber = Product::where('id', $content->id)->value('selling_number');
+
+                Product::where('id', $content->id)->update(['selling_number' => $currentSellingNumber + $content->qty]);
             }
+            Cart::destroy();
+            return redirect()->back();
         } else {
             return redirect()->back();
         }

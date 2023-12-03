@@ -1,21 +1,29 @@
 <?php
 
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaypalController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [HomeController::class, 'indexPage'])->name('home');
 
 Route::get('/store', [HomeController::class, 'storePage'])->name('store');
+Route::get('/store/{deviceType}', [HomeController::class, 'storeDevicePage'])->name('store.device');
 Route::get('/store/single/{id}', [HomeController::class, 'singlePage'])->name('store.single');
 Route::get('/store/category/{id}', [HomeController::class, 'categoryPage'])->name('store.category');
 
-Route::get('/store/cart', [HomeController::class, 'cartPage'])->name('store.cart');
+Route::get('/cart', [HomeController::class, 'cartPage'])->name('store.cart');
 Route::get('/store/add-to-cart/{product_id}', [HomeController::class, 'addToCart'])->name('store.add-to-cart');
 Route::get('qty-increment/{rowId}', [HomeController::class, 'qtyIncrement'])->name('qty-increment');
 Route::get('qty-decrement/{rowId}', [HomeController::class, 'qtyDecrement'])->name('qty-decrement');
 Route::get('remove-product/{rowId}', [HomeController::class, 'removeProduct'])->name('remove-product');
+
+Route::get('/login/google', [GoogleController::class, 'redirect'])->name('login.google-redirect');
+Route::get('/login/google/callback', [GoogleController::class, 'callback'])->name('login.google-callback');
+
+Route::post('/send/review', [HomeController::class, 'review'])->name('send.review');
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout_handler', [HomeController::class, 'logoutHandler'])->name('logout_handler');
@@ -26,7 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/user-orders', [HomeController::class, 'userOrders'])->name('user-orders');
 
     Route::post('/place-order', [PaypalController::class, 'buyProduct'])->name('place-order');
-    Route::get('/store/checkout', [HomeController::class, 'checkoutPage'])->name('store.checkout');
+    Route::get('/checkout', [HomeController::class, 'checkoutPage'])->name('store.checkout');
     Route::get('paypal/success', [PaypalController::class, 'success'])->name('paypal_success');
     Route::get('paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal_cancel');
 });

@@ -19,6 +19,10 @@ class Product extends Model
     {
         return $this->belongsToMany(Category::class);
     }
+    public function deviceTypes()
+    {
+        return $this->belongsToMany(DeviceType::class, 'product_device_type', 'product_id', 'device_type_id');
+    }
     function orderItems()
     {
         return $this->hasMany(Order_item::class);

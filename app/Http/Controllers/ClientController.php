@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\ClientsDataTable;
 use App\Http\Controllers\Controller;
-use App\Models\Client;
+use App\Models\User;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -43,7 +43,7 @@ class ClientController extends Controller
             'status' => ['required'],
         ]);
 
-        $user = new Client();
+        $user = new User();
 
         $imagePath = $this->uploadImage($request, 'image', 'uploads');
 
@@ -78,7 +78,7 @@ class ClientController extends Controller
      */
     public function edit(string $id)
     {
-        $client = Client::findOrFail($id);
+        $client = User::findOrFail($id);
         return view('admin.pages.clients.edit', compact('client'));
     }
 
@@ -97,7 +97,7 @@ class ClientController extends Controller
             'status' => ['required'],
         ]);
 
-        $user = new Client();
+        $user = User::findOrFail($id);
 
         $imagePath = $this->updateImage($request, 'image', 'uploads', $user->image);
 
@@ -124,7 +124,7 @@ class ClientController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = Client::findOrFail($id);
+        $user = User::findOrFail($id);
         $this->deleteImage($user->image);
         $user->delete();
 

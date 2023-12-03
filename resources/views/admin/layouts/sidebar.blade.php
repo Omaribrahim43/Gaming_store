@@ -2,7 +2,7 @@
     <div id="sidebar" class="sidebar sidebar-with-footer">
         <!-- Aplication Brand -->
         <div class="app-brand">
-            <a href="">
+            <a href="{{ route('admin.home') }}">
                 <img src="{{ asset('admin/images/logo.png') }}">
             </a>
         </div>
@@ -10,8 +10,8 @@
         <div class="sidebar-left" data-simplebar style="height: 100%;">
             <!-- sidebar menu -->
             <ul class="nav sidebar-inner" id="sidebar-menu">
-                <li class="">
-                    <a class="sidenav-item-link" href="">
+                <li class="{{ set_active(['admin.home']) }}">
+                    <a class="sidenav-item-link" href="{{ route('admin.home') }}">
                         <i class="mdi mdi-briefcase-account-outline"></i>
                         <span class="nav-text">Dashboard</span>
                     </a>
@@ -50,6 +50,18 @@
                     <a class="sidenav-item-link" href="{{ route('admin.discounts.index') }}">
                         <i class="mdi mdi-projector"></i>
                         <span class="nav-text">Discounts</span>
+                    </a>
+                </li>
+                <li class="{{ set_active(['admin.reviews.*']) }}">
+                    <a class="sidenav-item-link" href="{{ route('admin.reviews.index') }}">
+                        <i class="mdi mdi-projector"></i>
+                        <span class="nav-text">Reviews</span>
+                    </a>
+                </li>
+                <li class="{{ set_active(['admin.device_types.*']) }}">
+                    <a class="sidenav-item-link" href="{{ route('admin.device_types.index') }}">
+                        <i class="mdi mdi-projector"></i>
+                        <span class="nav-text">Device Types</span>
                     </a>
                 </li>
                 {{-- <li class="{{ set_active(['admin.categories.*']) }}">

@@ -3,11 +3,12 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\DeviceTypeController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\ProductController;
-use App\Models\Order_item;
+use App\Http\Controllers\ReviewsController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -25,6 +26,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('orders', OrderController::class);
         Route::resource('discounts', DiscountController::class);
         Route::resource('order-items', OrderItemController::class);
+        Route::resource('reviews', ReviewsController::class);
+        Route::resource('device_types', DeviceTypeController::class);
         Route::get('/profile', [AdminController::class, 'adminProfile'])->name('profile');
         Route::post('/profile-update/{id}', [AdminController::class, 'updateProfile'])->name('profile.update');
         Route::get('/profile/change-password', [AdminController::class, 'changePassword'])->name('profile.change-password');

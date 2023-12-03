@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\Product;
+use App\Models\DeviceType;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
@@ -12,20 +12,21 @@ use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 
-class ProductDataTable extends DataTable
+class DeviceTypeDataTable extends DataTable
 {
     /**
-     * Build the DataTable class.
+     * Build DataTable class.
      *
      * @param QueryBuilder $query Results from query() method.
+     * @return \Yajra\DataTables\EloquentDataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', function ($query) {
                 $btns = "<div class='btn-group mr-3 mb-4' role='group' aria-label='Basic example'>
-                    <a href='" . route('admin.products.edit', $query->id) . "' type='button' class='btn btn-primary'><i class='far fa-edit'></i></a>
-                    <a href='" . route('admin.products.destroy', $query->id) . "' type='button' class='btn btn-danger delete-item'><i class='fas fa-trash-alt'></i></a>
+                    <a href='" . route('admin.device_types.edit', $query->id) . "' type='button' class='btn btn-primary'><i class='far fa-edit'></i></a>
+                    <a href='" . route('admin.device_types.destroy', $query->id) . "' type='button' class='btn btn-danger delete-item'><i class='fas fa-trash-alt'></i></a>
                 </div>";
                 return $btns;
             })
@@ -35,28 +36,30 @@ class ProductDataTable extends DataTable
                 }
                 return $img = "<img width='80px' src='" . url('admin/no-category-image.jpg') . "'></img>";
             })
-            ->addColumn('price', function ($query) {
-                return "$query->price JOD";
-            })
             ->rawColumns(['image', 'action', 'status'])
             ->setRowId('id');
     }
 
     /**
-     * Get the query source of dataTable.
+     * Get query source of dataTable.
+     *
+     * @param \App\Models\DeviceType $model
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Product $model): QueryBuilder
+    public function query(DeviceType $model): QueryBuilder
     {
         return $model->newQuery();
     }
 
     /**
-     * Optional method if you want to use the html builder.
+     * Optional method if you want to use html builder.
+     *
+     * @return \Yajra\DataTables\Html\Builder
      */
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('product-table')
+            ->setTableId('devicetype-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             //->dom('Bfrtip')
@@ -74,28 +77,31 @@ class ProductDataTable extends DataTable
 
     /**
      * Get the dataTable columns definition.
+     *
+     * @return array
      */
     public function getColumns(): array
     {
         return [
-            Column::make('id')->width(40),
-            Column::make('image')->width(100),
-            Column::make('name')->width(100),
-            Column::make('description'),
-            Column::make('price'),
+
+            Column::make('id'),
+            Column::make('image'),
+            Column::make('name'),
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
-                ->width(200)
+                ->width(60)
                 ->addClass('text-center'),
         ];
     }
 
     /**
-     * Get the filename for export.
+     * Get filename for export.
+     *
+     * @return string
      */
     protected function filename(): string
     {
-        return 'Product_' . date('YmdHis');
+        return 'DeviceType_' . date('YmdHis');
     }
 }

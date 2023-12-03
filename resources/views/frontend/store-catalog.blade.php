@@ -29,41 +29,48 @@
             <!-- START: Products Filter -->
             <div class="row vertical-gap">
                 <div class="col-lg-8">
-                    <div class="row vertical-gap">
-                        <div class="col-md-4">
-                            <select class="form-control">
-                                <option value="" disabled selected>Select Platform</option>
-                                <option value="ps4">PS4</option>
-                                <option value="xbox">Xbox 1</option>
-                                <option value="pc">PC</option>
-                            </select>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="nk-input-slider-inline">
-                                <div class="nk-input-slider">
-                                    <div class="nk-input-slider-content text-white">
-                                        PRICE:
-                                        <strong class="text-main-1">€ <span class="nk-input-slider-value-0"></span></strong>
-                                        -
-                                        <strong class="text-main-1">€ <span class="nk-input-slider-value-1"></span></strong>
+                    <form action="{{ route('store') }}" method="GET">
+                        <div class="row vertical-gap">
+                            <div class="col-md-4">
+                                <select name="device_type" class="form-control">
+                                    <option value="" disabled selected>Select Platform</option>
+                                    @foreach ($deviceTypes as $deviceType)
+                                        <option value="{{ $deviceType->name }}">{{ $deviceType->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="nk-input-slider-inline">
+                                    <div class="nk-input-slider">
+                                        <div class="nk-input-slider-content text-white">
+                                            PRICE:
+                                            <strong class="text-main-1">JD <span
+                                                    class="nk-input-slider-value-0"></span></strong>
+                                            -
+                                            <strong class="text-main-1">JD <span
+                                                    class="nk-input-slider-value-1"></span></strong>
+                                        </div>
+                                        <div class="nk-input-slider-input">
+                                            <input type="text" name="price-filter" data-slider-min="0"
+                                                data-slider-max="200" data-slider-step="1" data-slider-value="[40, 160]"
+                                                data-slider-tooltip="hide">
+                                        </div>
                                     </div>
-                                    <div class="nk-input-slider-input">
-                                        <input type="text" name="price-filter" data-slider-min="0" data-slider-max="1800"
-                                            data-slider-step="1" data-slider-value="[200, 1200]" data-slider-tooltip="hide">
+                                    <div>
+                                        <button type="submit"
+                                            class="nk-btn nk-btn-rounded nk-btn-color-white">Apply</button>
                                     </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="nk-btn nk-btn-rounded nk-btn-color-white">Apply</a>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
                 <div class="col-lg-4">
-                    <form action="#" class="nk-form" novalidate="novalidate">
+                    <form action="{{ route('store') }}" method="GET" class="nk-form" novalidate="novalidate">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Type something...">
-                            <button class="nk-btn nk-btn-color-main-1"><span class="ion-search"></span></button>
+                            <input type="text" name="name" class="form-control" placeholder="Type something...">
+                            <button type="submit" class="nk-btn nk-btn-color-main-1"><span
+                                    class="ion-search"></span></button>
                         </div>
                     </form>
                 </div>
@@ -78,15 +85,21 @@
                     <div class="col-lg-6">
                         <div class="nk-product-cat-2">
                             <a class="nk-product-image" href="{{ route('store.single', $product->id) }}">
-                                <img src="{{ asset($product->image) }}" alt="So saying he unbuckled">
+                                <img src="{{ asset($product->image) }}">
                             </a>
                             <div class="nk-product-cont">
                                 <h3 class="nk-product-title h5"><a
                                         href="{{ route('store.single', $product->id) }}">{{ $product->name }}</a></h3>
                                 <div class="nk-gap-1"></div>
-                                <div class="nk-product-rating" data-rating="4"> <i class="fa fa-star"></i> <i
-                                        class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-                                        class="far fa-star"></i></div>
+                                <div class="nk-product-rating" data-rating="{{ $product->averageRating }}">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= $product->averageRating)
+                                            <i class="fa fa-star"></i>
+                                        @else
+                                            <i class="far fa-star"></i>
+                                        @endif
+                                    @endfor
+                                </div> <small>(Reviews: {{ $product->reviews }})</small>
                                 <div class="nk-gap-1"></div>
                                 {{ $product->description }}
                                 <div class="nk-gap-2"></div>
@@ -139,6 +152,4 @@
 
     <img class="nk-page-background-top" src="{{ asset('frontend/assets/images/bg-top-4.png') }}" alt="">
     <img class="nk-page-background-bottom" src="{{ asset('frontend/assets/images/bg-bottom.png') }}" alt="">
-
-    <!-- END: Page Background -->
 @endsection

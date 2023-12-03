@@ -4,23 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\DeviceType;
 use App\Models\Order;
 use App\Models\Order_item;
 use App\Models\Product;
+use App\Models\ProductDeviceType;
+use App\Models\Reviews;
 use App\Models\User;
 use App\Traits\ImageUploadTrait;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
     use ImageUploadTrait;
     public function indexPage()
     {
+        $deviceTypes = DeviceType::all();
         $categories = Category::all();
-        return view('frontend.index', compact('categories'));
+        $topSellingItems = Product::orderBy('selling_number', 'desc')
+            ->take(10)
+            ->get();
+        $popularGames = Product::orderBy('reviews', 'desc')
+            ->take(6)
+            ->get();
+        // dd($popularGames);
+        return view('frontend.index', compact('categories', 'topSellingItems', 'popularGames', 'deviceTypes'));
     }
     public function loginPage()
     {
@@ -155,30 +167,70 @@ class HomeController extends Controller
         }
         return view('frontend.profile.user-orders', compact('userItems'));
     }
-    public function storePage()
+    public function storePage(Request $request)
     {
-        $itemsPerPage = 6;
-        $currentPage = request()->get('page', 1);
-        $data = Product::all();
+        $deviceTypes = DeviceType::all();
 
-        $totalItems = count($data);
+        $query = Product::query();
+
+        // Apply search filter if 'name' is provided in the request
+        if ($request->has('name') && $request->filled('name')) {
+            $query->where('name', 'LIKE', '%' . $request->name . '%');
+        }
+
+        // Apply device type filter
+        if ($request->has('device_type') && $request->filled('device_type')) {
+            $query->whereHas('deviceTypes', function ($subQuery) use ($request) {
+                $subQuery->where('name', $request->device_type);
+            });
+        }
+
+        // Apply price filter
+        if ($request->has('price-filter')) {
+            $priceRange = json_decode($request->input('price-filter'), true);
+
+            if ($priceRange && isset($priceRange[0], $priceRange[1])) {
+                $query->whereBetween('price', [$priceRange[0], $priceRange[1]]);
+            }
+        }
+
+        $itemsPerPage = 6;
+        $currentPage = $request->get('page', 1);
+
+        // Retrieve the total count without pagination
+        $totalItems = $query->count();
+
+        // Paginate the results
+        $products = $query->paginate($itemsPerPage);
+
         $totalPages = ceil($totalItems / $itemsPerPage);
 
-        $start = ($currentPage - 1) * $itemsPerPage;
-        $end = min($start + $itemsPerPage, $totalItems);
+        return view('frontend.store-catalog', compact('products', 'totalItems', 'itemsPerPage', 'totalPages', 'currentPage', 'deviceTypes'));
+    }
+    public function storeDevicePage($deviceType)
+    {
+        // Retrieve the DeviceType model based on the name
+        $deviceTypeModel = DeviceType::where('name', $deviceType)->first();
 
-        $products = $data->slice($start, $end - $start);
+        if (!$deviceTypeModel) {
+            // Handle case where the device type is not found
+            abort(404);
+        }
 
-        return view('frontend.store-catalog', compact('products', 'totalItems', 'itemsPerPage', 'totalPages', 'currentPage'));
+        // Retrieve products associated with the device type
+        $products = $deviceTypeModel->products;
+
+        return view('frontend.store-catalog-device', compact('deviceType', 'products'));
     }
     public function singlePage($id)
     {
+        $reviews = Reviews::where('product_id', $id)->get();
         $categories = Category::select('categories.*')
             ->join('product_categories', 'categories.id', '=', 'product_categories.category_id')
             ->where('product_categories.product_id', $id)
             ->get();
         $product = Product::findOrFail($id);
-        return view('frontend.single-product', compact('product', 'categories'));
+        return view('frontend.single-product', compact('product', 'categories', 'reviews'));
     }
     public function categoryPage($id)
     {
@@ -237,5 +289,40 @@ class HomeController extends Controller
     public function checkoutPage()
     {
         return view('frontend.checkout');
+    }
+
+    public function review(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'title' => 'required',
+            'message' => 'required',
+            'review_rate' => 'required',
+        ]);
+
+        $review = new Reviews();
+        $productId = $request->product_id;
+
+        $review->user_id = $request->user_id;
+        $review->product_id = $request->product_id;
+        $review->title = $request->title;
+        $review->name = $request->name;
+        $review->review = $request->message;
+        $review->rating = $request->review_rate;
+        $review->save();
+
+        // Increment reviews count for the product
+        $product = Product::findOrFail($productId);
+        $product->increment('reviews', 1);
+
+        // Calculate the new average rating for the product
+        $averageRating = Reviews::where('product_id', $productId)->avg('rating');
+
+        // Update the product's average rating
+        $product->averageRating = $averageRating;
+        $product->save();
+
+        Session::flash('success', 'Review Successfully Submitted!');
+        return back();
     }
 }

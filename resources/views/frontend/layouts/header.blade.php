@@ -10,6 +10,11 @@
                         </a>
                     </li>
                     <li>
+                        <a href="#" data-toggle="modal" data-target="#modalLogin">
+                            <span class="fa fa-user"></span>
+                        </a>
+                    </li>
+                    <li>
                         @if (Cart::count() == 0)
                             <a href="{{ route('store.cart') }}">
                                 <span class="fa fa-shopping-cart"></span>
